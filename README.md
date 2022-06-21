@@ -4,6 +4,11 @@ Curso na School of Net!
 
 <hr />
 
+### Instalação
+Executar `composer install` na pasta do projeto para a instalação. 
+
+<hr />
+
 ### Comandos:
 ```shell 
 # start php
