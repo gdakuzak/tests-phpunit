@@ -1,0 +1,19 @@
+{
+    "name": "gdakuzak/curso_phpunit",
+    "description": "Curso para melhorar conhecimentos em PHPUnit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Guilherme Dakuzaku"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "^6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gdakuzak\\": "src/"
+        }
+    }
+}
