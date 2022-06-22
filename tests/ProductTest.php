@@ -15,24 +15,21 @@ class ProductTest extends TestCase
         $this->assertNull($product->getId());
     }
 
-    public function testSetAndGetName(){
+    /**
+     * @dataProvider collectionNames
+     */
+    public function testEncapsulate($property, $expected){
         $product = new Product();
-        $this->assertNull($product->getName());
-        $this->assertInstanceOf(Product::class,$product->setName('Caju'));
-        $this->assertEquals('Caju',$product->getName());
-    }
-    
-    public function testSetAndGetPrice(){
-        $product = new Product();
-        $this->assertNull($product->getPrice());
-        $this->assertInstanceOf(Product::class,$product->setPrice(10.11));
-        $this->assertEquals(10.11,$product->getPrice());
+        $this->assertNull($product->{'get'.ucfirst($property)}());
+        $this->assertInstanceOf(Product::class,$product->{'set'.ucfirst($property)}($expected));
+        $this->assertEquals($expected,$product->{'get'.ucfirst($property)}());
     }
 
-    public function testSetAndGetQuantity(){
-        $product = new Product();
-        $this->assertNull($product->getQuantity());
-        $this->assertInstanceOf(Product::class,$product->setQuantity(150));
-        $this->assertEquals(150,$product->getQuantity());
+    public function collectionNames() {
+        return [
+            ['name','Caju'],
+            ['price',10],
+            ['quantity',150],
+        ];
     }
 }
