@@ -63,6 +63,22 @@ class ProductDBTest extends TestCase
     /**
      * @depends testIfProductIsUpdated
      */
+    public function testeIfProductCanBeRecovered($id)
+    {
+        global $db;
+        $product = new Product($db);
+        $result = $product->find($id);
+
+        $this->assertEquals($id,$result->getId());
+        $this->assertEquals('Caju',$result->getName());
+        $this->assertEquals(9.10,$result->getPrice());
+        $this->assertEquals(15,$result->getQuantity());
+        $this->assertEquals(9.10*15,$result->getTotal());
+    }
+
+    /**
+     * @depends testIfProductIsUpdated
+     */
     public function testeIfProductCanDeleted($id)
     {
         global $db;
@@ -72,6 +88,17 @@ class ProductDBTest extends TestCase
 
         $products = $product->all();
         $this->assertCount(1,$products);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Product does not exist
+     */
+    public function testeIfProductNotFound()
+    {
+        global $db;
+        $product = new Product($db);
+        $result = $product->find(9999999999999999);
     }
 
 }

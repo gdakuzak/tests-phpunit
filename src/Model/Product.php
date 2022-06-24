@@ -54,7 +54,7 @@ class Product
      */ 
     public function getPrice(): ?float
     {
-        return $this->price;
+        return (float) $this->price;
     }
 
     /**
@@ -74,7 +74,7 @@ class Product
      */ 
     public function getQuantity(): ?int
     {
-        return $this->quantity;
+        return (int) $this->quantity;
     }
 
     /**
@@ -94,7 +94,7 @@ class Product
      */ 
     public function getTotal(): ?float
     {
-        return $this->total;
+        return (float) $this->total;
     }
 
     public function hydrate(array $data)
@@ -142,6 +142,20 @@ class Product
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function find(int $id): Product
+    {
+        $query = "SELECT * FROM products WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(":id",$id);
+        $stmt->execute();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if(!$data){
+            throw new \Exception('Product does not exist');
+        }
+        $this->hydrate($data);
+        return $this;
     }
 
 }
