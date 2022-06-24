@@ -5,35 +5,33 @@ use PHPUnit\Framework\TestCase;
 
 class ProductDBTest extends TestCase
 {
+
+    private $db;
+
+    protected function setUp(): void
+    {
+        $this->db = getPDO();
+    }
+
     public function testIfProductIsSaved()
     {
-        global $db;
-        $product = new Product($db);
-        $result = $product->save([
-            'name' => 'Caju',
-            'price' => 10.10,
-            'quantity' => 10,
-        ]);
-
+        $result = $this->createProduct();
+        $product = new Product($this->db);
+        
         $this->assertEquals(1,$result->getId());
-        $this->assertEquals('Caju',$result->getName());
-        $this->assertEquals(10.10,$result->getPrice());
-        $this->assertEquals(10,$result->getQuantity());
-        $this->assertEquals(10.10*10,$result->getTotal());
+        $this->assertEquals('Maracujá',$result->getName());
+        $this->assertEquals(15.20,$result->getPrice());
+        $this->assertEquals(5,$result->getQuantity());
+        $this->assertEquals(15.20*5,$result->getTotal());
 
         return $result->getId();
     }
 
     public function testeIfListProducts()
     {
-        global $db;
-        $product = new Product($db);
-        $result = $product->save([
-            'name' => 'Maracujá',
-            'price' => 15.20,
-            'quantity' => 5,
-        ]);
-
+        $product = new Product($this->db);
+        $this->createProduct();
+        $this->createProduct();
         $products = $product->all();
         $this->assertCount(2,$products);
     }
@@ -43,8 +41,7 @@ class ProductDBTest extends TestCase
      */
     public function testIfProductIsUpdated($id)
     {
-        global $db;
-        $product = new Product($db);
+        $product = new Product($this->db);
         $result = $product->save([
             'id' => $id,
             'name' => 'Caju',
@@ -52,38 +49,36 @@ class ProductDBTest extends TestCase
             'quantity' => 15,
         ]);
 
-        $this->assertEquals($id,$result->getId());
+        $this->assertEquals(1,$result->getId());
         $this->assertEquals('Caju',$result->getName());
         $this->assertEquals(9.10,$result->getPrice());
         $this->assertEquals(15,$result->getQuantity());
         $this->assertEquals(9.10*15,$result->getTotal());
-        return $id;
+        return $result->getId();
+    }
+
+    public function testeIfProductCanBeRecovered()
+    {
+        $result = $this->createProduct();
+        $product = new Product($this->db);
+        $result = $product->find($result->getId());
+
+        $this->assertEquals(1,$result->getId());
+        $this->assertEquals('Maracujá',$result->getName());
+        $this->assertEquals(15.20,$result->getPrice());
+        $this->assertEquals(5,$result->getQuantity());
+        $this->assertEquals(15.20*5,$result->getTotal());
     }
 
     /**
      * @depends testIfProductIsUpdated
      */
-    public function testeIfProductCanBeRecovered($id)
+    public function testeIfProductCanDeleted()
     {
-        global $db;
-        $product = new Product($db);
-        $result = $product->find($id);
-
-        $this->assertEquals($id,$result->getId());
-        $this->assertEquals('Caju',$result->getName());
-        $this->assertEquals(9.10,$result->getPrice());
-        $this->assertEquals(15,$result->getQuantity());
-        $this->assertEquals(9.10*15,$result->getTotal());
-    }
-
-    /**
-     * @depends testIfProductIsUpdated
-     */
-    public function testeIfProductCanDeleted($id)
-    {
-        global $db;
-        $product = new Product($db);
-        $result = $product->delete($id);
+        $this->createProduct();
+        $this->createProduct();
+        $product = new Product($this->db);
+        $result = $product->delete(1);
         $this->assertTrue($result);
 
         $products = $product->all();
@@ -96,9 +91,19 @@ class ProductDBTest extends TestCase
      */
     public function testeIfProductNotFound()
     {
-        global $db;
+        $db = $this->db;
         $product = new Product($db);
         $result = $product->find(9999999999999999);
+    }
+
+    private function createProduct()
+    {
+        $product = new Product($this->db);
+        return $product->save([
+            'name' => 'Maracujá',
+            'price' => 15.20,
+            'quantity' => 5,
+        ]);
     }
 
 }
