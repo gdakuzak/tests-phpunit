@@ -11,4 +11,4 @@ services:
     command: sh -c ''
   tests:
     <<: *default
-    command: sh -c './vendor/bin/phpunit tests/ProductDBTest.php --bootstrap=tests/bootstrap.php'
+    command: sh -c './vendor/bin/phpunit tests'

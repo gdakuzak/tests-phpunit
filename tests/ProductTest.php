@@ -3,27 +3,40 @@
 use Gdakuzak\Model\Product;
 use PHPUnit\Framework\TestCase;
 
-// before add PDO in Product Model.
 class ProductTest extends TestCase
 {
-    public function testIfTotalIsNull() {
-        $product = new Product();
-        $this->assertNull($product->getTotal());
+    private $product;
+    
+    protected function setUp(): void
+    {
+        $pdo = $this->getMockBuilder(\PDO::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $this->product = new Product($pdo);
+    }
+    
+    public function testIfTotalIsZero() {
+        $this->assertEquals(0.00,$this->product->getTotal());
     }
 
-    public function testIfIdNull() {
-        $product = new Product();
-        $this->assertNull($product->getId());
+    public function testIfIdIsZero() {
+        $this->assertEquals(0,$this->product->getId());
     }
 
     /**
      * @dataProvider collectionNames
      */
     public function testEncapsulate($property, $expected){
-        $product = new Product();
-        $this->assertNull($product->{'get'.ucfirst($property)}());
-        $this->assertInstanceOf(Product::class,$product->{'set'.ucfirst($property)}($expected));
-        $this->assertEquals($expected,$product->{'get'.ucfirst($property)}());
+        if(!is_float($expected) && !is_int($expected)){
+            $this->assertNull($this->product->{'get'.ucfirst($property)}());
+        } elseif(is_float($expected)){
+            $this->assertEquals(0.0, $null);
+        } elseif(is_int($expected)) {
+            $this->assertEquals(0, $null);
+        }
+
+        $this->assertInstanceOf(Product::class,$this->product->{'set'.ucfirst($property)}($expected));
+        $this->assertEquals($expected,$this->product->{'get'.ucfirst($property)}());
     }
 
     public function collectionNames() {

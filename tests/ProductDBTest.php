@@ -105,5 +105,4 @@ class ProductDBTest extends TestCase
             'quantity' => 5,
         ]);
     }
-
 }
