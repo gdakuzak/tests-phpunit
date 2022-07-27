@@ -1,6 +1,7 @@
 # Repositorio de Estudo: PHP Unit 
 
-Curso na School of Net! 
+Curso na School of Net!
+Conteúdo contem alteracoes e adaptações do curso original.
 
 <hr />
 
